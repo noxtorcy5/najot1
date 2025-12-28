@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Najot LMS — MVP</title>
+    <style>
+        :root {
+            --bg: #0f1216;
+            --panel: #161a20;
+            --text: #eaeef6;
+            --muted: #a9b4c2;
+            --brand: #2ec4b6;
+            /* Fresh reinterpretation of Najot vibe */
+            --accent: #7c3aed;
+            --danger: #ef4444;
+            --ok: #22c55e;
+            --warning: #f59e0b;
+            --card: #11151a;
+            --border: #222a33;
+        }
+
+        .light {
+            --bg: #f7f9fc;
+            --panel: #ffffff;
+            --text: #0b1220;
+            --muted: #5b6a7f;
+            --brand: #0ea5e9;
+            --accent: #7c3aed;
+            --danger: #dc2626;
+            --ok: #16a34a;
+            --warning: #d97706;
+            --card: #ffffff;
+            --border: #e5e9f0;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            background: var(--panel);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .brand {
+            font-weight: 700;
+            letter-spacing: 0.2px
+        }
+
+        .brand b {
+            color: var(--brand)
+        }
+
+        .wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 24px
+        }
+
+        .grid {
+            display: grid;
+            gap: 16px
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(3, minmax(0, 1fr))
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr))
+        }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        h2 {
+            margin: 0 0 10px 0;
+            font-size: 18px
+        }
+
+        h3 {
+            margin: 0 0 8px 0;
+            font-size: 16px
+        }
+
+        p {
+            color: var(--muted);
+            margin: 6px 0
+        }
+
+        .muted {
+            color: var(--muted)
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--brand);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 14px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn.secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border)
+        }
+
+        .btn.warning {
+            background: var(--warning);
+            color: #111
+        }
+
+        .btn.ok {
+            background: var(--ok)
+        }
+
+        .btn.danger {
+            background: var(--danger)
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: var(--text);
+        }
+
+        .kpi {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin: 12px 0;
+        }
+
+        .kpi .card {
+            text-align: center;
+        }
+
+        .progress {
+            width: 100%;
+            height: 10px;
+            background: #1b222b;
+            border-radius: 999px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--brand), var(--accent));
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 4px 8px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            color: var(--muted);
+            font-size: 12px
+        }
+
+        .flex {
+            display: flex;
+            gap: 12px;
+            align-items: center
+        }
+
+        .space {
+            justify-content: space-between
+        }
+
+        .list {
+            display: grid;
+            gap: 10px
+        }
+
+        .hidden {
+            display: none !important
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            align-items: center
+        }
+
+        .video {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #0b0f14;
+            border: 1px dashed var(--border);
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            color: var(--muted);
+        }
+
+        footer {
+            padding: 24px;
+            text-align: center;
+            color: var(--muted)
+        }
+
+        .login {
+            max-width: 420px;
+            margin: 40px auto;
+        }
+
+        .notif {
+            position: fixed;
+            bottom: 16px;
+            right: 16px;
+            display: grid;
+            gap: 8px;
+            z-index: 20;
+        }
+
+        .toast {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 10px 12px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, .15)
+        }
+
+        .streak {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .streak .dot {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: #10151b;
+        }
+
+        .streak .dot.active {
+            background: var(--brand)
+        }
+
+        .cert {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 12px;
+            align-items: center;
+            padding: 10px;
+            border: 1px dashed var(--border);
+            border-radius: 12px;
+        }
+
+        .small {
+            font-size: 12px
+        }
+
+        .switch {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .switch input {
+            width: auto
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 999px;
+            background: linear-gradient(45deg, var(--brand), var(--accent));
+            display: grid;
+            place-items: center;
+            color: white;
+            font-weight: 700;
+        }
+
+        .pill {
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: #0c1117;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 12px
+        }
+    </style>
+</head>
+
+<body class="light">
+    <header>
+        <div class="flex">
+            <div class="brand">Najot <b>LMS</b></div>
+            <span class="pill">MVP</span>
+        </div>
+        <div class="flex">
+            <label class="switch">
+                <input id="themeToggle" type="checkbox" />
+                <span class="muted">Dark mode</span>
+            </label>
+            <div id="userBadge" class="flex"></div>
+        </div>
+    </header>
+
+    <div class="wrap">
+        <!-- LOGIN -->
+        <section id="loginView" class="login">
+            <div class="panel">
+                <h2>Kirish</h2>
+                <p class="muted">Email va parolni kiriting. Ma’lumotlar brauzeringizda saqlanadi.</p>
+                <div class="list">
+                    <div>
+                        <label>Email</label>
+                        <input id="loginEmail" type="email" placeholder="talaba@example.com" />
+                    </div>
+                    <div>
+                        <label>Parol</label>
+                        <input id="loginPass" type="password" placeholder="••••••••" />
+                    </div>
+                    <button id="loginBtn" class="btn">Kirish</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- DASHBOARD -->
+        <section id="dashboardView" class="hidden">
+            <div class="grid grid-2">
+                <div class="panel">
+                    <div class="row">
+                        <h2>Bugungi fokus</h2>
+                        <span class="tag" id="todayDate"></span>
+                    </div>
+                    <div class="list">
+                        <div class="card">
+                            <h3>Bugungi dars</h3>
+                            <p id="todayLesson" class="muted"></p>
+                        </div>
+                        <div class="card">
+                            <h3>Uy vazifasi muddati</h3>
+                            <p id="todayDeadline" class="muted"></p>
+                        </div>
+                        <div class="card">
+                            <h3>Mentordan xabar</h3>
+                            <p id="mentorMsg" class="muted"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="row">
+                        <h2>Kurslar</h2>
+                        <button class="btn secondary" id="addCourseBtn">Kurs qo‘shish</button>
+                    </div>
+                    <div id="coursesList" class="list"></div>
+                </div>
+            </div>
+
+            <div class="panel" style="margin-top:16px">
+                <div class="row">
+                    <h2>Umumiy ko‘rinish</h2>
+                    <div class="flex">
+                        <span class="tag">Haftalik</span>
+                        <span class="tag">Streak</span>
+                    </div>
+                </div>
+                <div class="kpi">
+                    <div class="card">
+                        <h3>Tugallangan darslar</h3>
+                        <p id="kpiDone" class="muted">0</p>
+                    </div>
+                    <div class="card">
+                        <h3>Faollik streak</h3>
+                        <p id="kpiStreak" class="muted">0 kun</p>
+                    </div>
+                    <div class="card">
+                        <h3>Haftalik progress</h3>
+                        <div class="progress">
+                            <div id="kpiWeekBar" class="bar" style="width:0%"></div>
+                        </div>
+                        <p id="kpiWeek" class="muted">0%</p>
+                    </div>
+                    <div class="card">
+                        <h3>Bildirishnomalar</h3>
+                        <p id="kpiNotifs" class="muted">0</p>
+                    </div>
+                </div>
+                <div class="streak" id="streakDots"></div>
+            </div>
+
+            <div class="panel" style="margin-top:16px">
+                <div class="row">
+                    <h2>Sertifikatlar</h2>
+                    <button class="btn secondary" id="addCertBtn">Preview qo‘shish</button>
+                </div>
+                <div id="certsList" class="list"></div>
+            </div>
+        </section>
+
+        <!-- LESSON VIEW -->
+        <section id="lessonView" class="hidden">
+            <div class="grid grid-2">
+                <div class="panel">
+                    <div class="row">
+                        <h2>Dars</h2>
+                        <span id="lessonCourseTag" class="tag"></span>
+                    </div>
+                    <div class="video">Video placeholder</div>
+                    <div class="card">
+                        <h3>Dars tavsifi</h3>
+                        <p id="lessonDesc" class="muted">Frontend: HTML/CSS/JS — komponentlar, layout, va localStorage
+                            asoslari.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Vazifalar</h3>
+                        <ul id="taskList" style="padding-left:18px">
+                            <li>HTML semantik tuzilma</li>
+                            <li>Responsive grid</li>
+                            <li>Assignments status simulyatsiya</li>
+                        </ul>
+                    </div>
+                    <button class="btn ok" id="markLessonDoneBtn">Dars tugallandi</button>
+                </div>
+                <div class="panel">
+                    <h2>Topshiriq</h2>
+                    <p class="muted">Matn/link yuborish — status: Pending → Reviewed → Approved</p>
+                    <div class="list">
+                        <div>
+                            <label>Yuborish (matn yoki link)</label>
+                            <textarea id="assignmentInput" rows="4"
+                                placeholder="Masalan: GitHub repo linki yoki qisqa izoh"></textarea>
+                        </div>
+                        <div class="row">
+                            <button class="btn" id="submitAssignmentBtn">Yuborish</button>
+                            <span id="assignmentStatusTag" class="tag">Bo‘sh</span>
+                        </div>
+                    </div>
+
+                    <div class="card" style="margin-top:12px">
+                        <h3>Mentor fikri</h3>
+                        <div class="list">
+                            <div class="row">
+                                <input id="mentorComment" placeholder="Mentor izohi (simulyatsiya)" />
+                                <button class="btn secondary" id="addMentorCommentBtn">Qo‘shish</button>
+                            </div>
+                            <div id="mentorCommentsList" class="list"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex" style="margin-top:12px">
+                        <button class="btn warning" id="setReviewedBtn">Reviewed</button>
+                        <button class="btn ok" id="setApprovedBtn">Approved</button>
+                        <button class="btn secondary" id="backToDashboardBtn">Dashboard</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROGRESS VIEW -->
+        <section id="progressView" class="hidden">
+            <div class="panel">
+                <div class="row">
+                    <h2>Progress tahlili</h2>
+                    <button class="btn secondary" id="progressBackBtn">Orqaga</button>
+                </div>
+                <div class="grid grid-3">
+                    <div class="card">
+                        <h3>Haftalik taqsimot</h3>
+                        <p id="progressWeekly" class="muted">Ma’lumotlar yangilanmoqda...</p>
+                    </div>
+                    <div class="card">
+                        <h3>Tugallangan darslar ro‘yxati</h3>
+                        <div id="progressDoneList" class="list"></div>
+                    </div>
+                    <div class="card">
+                        <h3>Streak tafsilotlari</h3>
+                        <p id="progressStreakDetail" class="muted"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>© Najot LMS — MVP. Brauzerda ishlaydi, ma’lumotlar localStorage’da saqlanadi.</footer>
+
+    <div class="notif" id="notif"></div>
+
+    <script>
+        // ---------- Storage Helpers ----------
+        const LS_KEY = 'najot_lms_mvp';
+        const readState = () => {
+            const raw = localStorage.getItem(LS_KEY);
+            if (!raw) return null;
+            try { return JSON.parse(raw); } catch { return null; }
+        };
+        const writeState = (s) => localStorage.setItem(LS_KEY, JSON.stringify(s));
+
+        // ---------- Initial State ----------
+        const defaultState = () => ({
+            user: null,
+            theme: 'light',
+            notifications: [],
+            daily: {
+                date: new Date().toLocaleDateString('uz-UZ'),
+                lesson: 'Frontend — HTML/CSS asoslari',
+                deadline: 'Bugun soat 23:59',
+                mentor: 'Bugun minimal MVP tayyorlang va topshiriqni yuboring.'
+            },
+            courses: [
+                { id: 'c-fe', name: 'Frontend', progress: 35, lessonsDone: ['Intro HTML'], currentLesson: 'Responsive Grid' },
+                { id: 'c-be', name: 'Backend', progress: 10, lessonsDone: [], currentLesson: 'Node.js Basics' },
+                { id: 'c-ui', name: 'Design', progress: 20, lessonsDone: ['Color Theory'], currentLesson: 'Layout Systems' }
+            ],
+            certs: [],
+            streak: { days: Array(7).fill(false), count: 0 },
+            assignment: { text: '', status: 'Empty', comments: [] },
+            metrics: { doneCount: 1, weeklyPercent: 20 }
+        });
+
+        let state = readState() || defaultState();
+
+        // ---------- UI Utilities ----------
+        const $ = (id) => document.getElementById(id);
+        const show = (id) => $(id).classList.remove('hidden');
+        const hide = (id) => $(id).classList.add('hidden');
+
+        const toast = (msg) => {
+            const wrap = $('notif');
+            const el = document.createElement('div');
+            el.className = 'toast';
+            el.textContent = msg;
+            wrap.appendChild(el);
+            setTimeout(() => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(10px)';
+                setTimeout(() => wrap.removeChild(el), 300);
+            }, 2000);
+        };
+
+        // ---------- Theme ----------
+        const applyTheme = () => {
+            document.body.className = state.theme === 'dark' ? '' : 'light';
+            $('themeToggle').checked = state.theme === 'dark';
+        };
+        $('themeToggle').addEventListener('change', (e) => {
+            state.theme = e.target.checked ? 'dark' : 'light';
+            applyTheme(); writeState(state);
+        });
+
+        // ---------- Auth ----------
+        const renderHeaderUser = () => {
+            const wrap = $('userBadge');
+            wrap.innerHTML = '';
+            if (state.user) {
+                const initials = state.user.email.slice(0, 1).toUpperCase();
+                const avatar = document.createElement('div');
+                avatar.className = 'avatar';
+                avatar.textContent = initials;
+                const info = document.createElement('div');
+                info.innerHTML = `<div class="muted small">${state.user.email}</div>`;
+                const logout = document.createElement('button');
+                logout.className = 'btn secondary';
+                logout.textContent = 'Chiqish';
+                logout.addEventListener('click', () => {
+                    state.user = null; writeState(state);
+                    route('login');
+                });
+                wrap.append(avatar, info, logout);
+            }
+        };
+
+        $('loginBtn').addEventListener('click', () => {
+            const email = $('loginEmail').value.trim();
+            const pass = $('loginPass').value.trim();
+            if (!email || !pass) { toast('Email va parol talab qilinadi'); return; }
+            state.user = { email }; writeState(state);
+            toast('Xush kelibsiz!');
+            route('dashboard');
+        });
+
+        // ---------- Router ----------
+        const route = (view) => {
+            ['loginView', 'dashboardView', 'lessonView', 'progressView'].forEach(hide);
+            if (view === 'login') show('loginView');
+            if (view === 'dashboard') show('dashboardView');
+            if (view === 'lesson') show('lessonView');
+            if (view === 'progress') show('progressView');
+            renderHeaderUser();
+            renderAll();
+        };
+
+        // ---------- Dashboard Rendering ----------
+        const renderDaily = () => {
+            $('todayDate').textContent = state.daily.date;
+            $('todayLesson').textContent = state.daily.lesson;
+            $('todayDeadline').textContent = state.daily.deadline;
+            $('mentorMsg').textContent = state.daily.mentor;
+        };
+
+        const renderCourses = () => {
+            const wrap = $('coursesList');
+            wrap.innerHTML = '';
+            state.courses.forEach(course => {
+                const div = document.createElement('div');
+                div.className = 'card';
+                div.innerHTML = `
+          <div class="row">
+            <h3>${course.name}</h3>
+            <span class="tag">${course.progress}%</span>
+          </div>
+          <p class="muted">Joriy dars: ${course.currentLesson}</p>
+          <div class="progress"><div class="bar" style="width:${course.progress}%"></div></div>
+          <div class="flex" style="margin-top:8px">
+            <button class="btn" data-id="${course.id}">Darsga o‘tish</button>
+          </div>
+        `;
+                div.querySelector('.btn').addEventListener('click', () => {
+                    state.currentCourseId = course.id;
+                    writeState(state);
+                    route('lesson');
+                });
+                wrap.appendChild(div);
+            });
+        };
+
+        $('addCourseBtn').addEventListener('click', () => {
+            const name = prompt('Kurs nomi (masalan, Data Analytics)');
+            if (!name) return;
+            const id = 'c-' + Math.random().toString(36).slice(2, 7);
+            state.courses.push({ id, name, progress: 0, lessonsDone: [], currentLesson: 'Lesson 1' });
+            toast('Kurs qo‘shildi');
+            writeState(state); renderCourses();
+        });
+
+        const renderKPIs = () => {
+            $('kpiDone').textContent = state.metrics.doneCount;
+            $('kpiWeekBar').style.width = state.metrics.weeklyPercent + '%';
+            $('kpiWeek').textContent = state.metrics.weeklyPercent + '%';
+            $('kpiNotifs').textContent = state.notifications.length;
+            // streak dots
+            const s = $('streakDots'); s.innerHTML = '';
+            state.streak.days.forEach((active) => {
+                const d = document.createElement('div');
+                d.className = 'dot' + (active ? ' active' : '');
+                s.appendChild(d);
+            });
+            $('kpiStreak').textContent = state.streak.count + ' kun';
+        };
+
+        const renderCerts = () => {
+            const wrap = $('certsList'); wrap.innerHTML = '';
+            state.certs.forEach(c => {
+                const row = document.createElement('div');
+                row.className = 'cert';
+                row.innerHTML = `
+          <div class="pill">${c.course}</div>
+          <div>
+            <div><b>${c.title}</b></div>
+            <div class="muted small">${c.date} • Preview</div>
+          </div>
+          <button class="btn secondary">Yuklab olish (fake)</button>
+        `;
+                wrap.appendChild(row);
+            });
+        };
+
+        $('addCertBtn').addEventListener('click', () => {
+            const course = prompt('Qaysi kurs uchun? (Frontend/Backend/Design)');
+            if (!course) return;
+            state.certs.push({
+                course,
+                title: course + ' Certificate',
+                date: new Date().toLocaleDateString('uz-UZ')
+            });
+            writeState(state); renderCerts(); toast('Sertifikat preview qo‘shildi');
+        });
+
+        // ---------- Lesson Rendering ----------
+        const currentCourse = () => state.courses.find(c => c.id === state.currentCourseId) || state.courses[0];
+        const renderLesson = () => {
+            const course = currentCourse();
+            $('lessonCourseTag').textContent = course ? course.name : 'Kurs';
+            $('assignmentStatusTag').textContent = state.assignment.status;
+            // Comments
+            const list = $('mentorCommentsList');
+            list.innerHTML = '';
+            state.assignment.comments.forEach((c, i) => {
+                const item = document.createElement('div');
+                item.className = 'row';
+                item.innerHTML = `
+          <div>
+            <div><b>Mentor:</b> ${c.text}</div>
+            <div class="small muted">${c.date}</div>
+          </div>
+          <button class="btn secondary" data-idx="${i}">O‘chirish</button>
+        `;
+                item.querySelector('button').addEventListener('click', (e) => {
+                    const idx = +e.target.dataset.idx;
+                    state.assignment.comments.splice(idx, 1);
+                    writeState(state); renderLesson();
+                });
+                list.appendChild(item);
+            });
+        };
+
+        $('markLessonDoneBtn').addEventListener('click', () => {
+            const course = currentCourse();
+            if (!course) return;
+            course.lessonsDone.push(course.currentLesson);
+            course.progress = Math.min(100, course.progress + 10);
+            state.metrics.doneCount += 1;
+            // streak update: mark today active
+            const todayIdx = new Date().getDay(); // 0-6
+            state.streak.days[todayIdx] = true;
+            state.streak.count = Math.min(7, state.streak.days.filter(Boolean).length);
+            state.metrics.weeklyPercent = Math.min(100, state.metrics.weeklyPercent + 10);
+            writeState(state);
+            toast('Dars tugallandi ✓');
+            renderCourses(); renderKPIs(); renderLesson();
+        });
+
+        $('submitAssignmentBtn').addEventListener('click', () => {
+            const txt = $('assignmentInput').value.trim();
+            if (!txt) { toast('Matn yoki link kiriting'); return; }
+            state.assignment.text = txt;
+            state.assignment.status = 'Pending';
+            state.notifications.push({ type: 'assignment', msg: 'Assignment yuborildi', date: new Date().toISOString() });
+            writeState(state);
+            $('assignmentInput').value = '';
+            toast('Yuborildi: Pending');
+            renderLesson(); renderKPIs();
+        });
+
+        $('setReviewedBtn').addEventListener('click', () => {
+            if (!state.assignment.text) { toast('Avval assignment yuboring'); return; }
+            state.assignment.status = 'Reviewed';
+            writeState(state); toast('Status: Reviewed'); renderLesson();
+        });
+
+        $('setApprovedBtn').addEventListener('click', () => {
+            if (!state.assignment.text) { toast('Avval assignment yuboring'); return; }
+            state.assignment.status = 'Approved';
+            const course = currentCourse();
+            if (course) course.progress = Math.min(100, course.progress + 5);
+            state.metrics.weeklyPercent = Math.min(100, state.metrics.weeklyPercent + 5);
+            writeState(state); toast('Status: Approved'); renderCourses(); renderKPIs(); renderLesson();
+        });
+
+        $('addMentorCommentBtn').addEventListener('click', () => {
+            const text = $('mentorComment').value.trim();
+            if (!text) { toast('Izoh matni kiriting'); return; }
+            state.assignment.comments.push({ text, date: new Date().toLocaleString('uz-UZ') });
+            $('mentorComment').value = '';
+            writeState(state); renderLesson(); toast('Mentor fikri qo‘shildi');
+        });
+
+        $('backToDashboardBtn').addEventListener('click', () => route('dashboard'));
+
+        // ---------- Progress View ----------
+        const renderProgressView = () => {
+            const totalDone = state.courses.reduce((sum, c) => sum + c.lessonsDone.length, 0);
+            $('progressWeekly').textContent = `Haftada yakunlangan darslar: ${totalDone}, umumiy progress: ${state.metrics.weeklyPercent}%`;
+            const list = $('progressDoneList'); list.innerHTML = '';
+            state.courses.forEach(c => {
+                const item = document.createElement('div');
+                item.className = 'card';
+                item.innerHTML = `<b>${c.name}</b><p class="muted small">${c.lessonsDone.length} dars tugallangan</p>`;
+                list.appendChild(item);
+            });
+            $('progressStreakDetail').textContent = `Faollik streak: ${state.streak.count} kun. Haftalik faollik nuqtalari yuqorida ko‘rsatilgan.`;
+        };
+        $('progressBackBtn').addEventListener('click', () => route('dashboard'));
+
+        // ---------- Global render ----------
+        const renderAll = () => {
+            applyTheme();
+            if (state.user) {
+                hide('loginView'); show('dashboardView');
+                renderDaily(); renderCourses(); renderKPIs(); renderCerts();
+                renderLesson(); // prepare lesson view if needed
+            } else {
+                show('loginView'); hide('dashboardView'); hide('lessonView'); hide('progressView');
+            }
+        };
+
+        // ---------- Keyboard shortcuts ----------
+        document.addEventListener('keydown', (e) => {
+            if (e.key.toLowerCase() === 'g') route('dashboard');
+            if (e.key.toLowerCase() === 'l') route('lesson');
+            if (e.key.toLowerCase() === 'p') { renderProgressView(); route('progress'); }
+        });
+
+        // ---------- Initial route ----------
+        if (state.user) route('dashboard'); else route('login');
+    </script>
+</body>
+
+</html>
